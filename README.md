@@ -1,5 +1,5 @@
-# vmt_backend
-Verein Management Tool - Backend
+# themis_backend
+Verein Management Tool Themis - Backend
 
 
 # JWT Security
