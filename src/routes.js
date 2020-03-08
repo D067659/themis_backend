@@ -3,6 +3,7 @@ var express         = require('express'),
 var playerController  = require('./controller/player-controler');
 var clubController  = require('./controller/club-controller');
 var matchController  = require('./controller/match-controller');
+var participationController  = require('./controller/participation-controller');
 
 var passport        = require('passport')
 
@@ -10,10 +11,12 @@ routes.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
     return res.send('Hello, this is the API');
 });
 
-routes.post('/register', playerController.registerPlayer);
+routes.post('/registerPlayer', playerController.registerPlayer);
 routes.post('/login', playerController.loginPlayer);
 routes.post('/registerClub', clubController.registerClub);
 routes.post('/registerMatch', matchController.registerMatch);
+routes.post('/registerParticipation', participationController.registerParticipation);
+routes.post('/participations', participationController.getParticipationsByPlayerId);
 
 
 routes.get('/special', passport.authenticate('jwt', { session: false }), (req, res) => {
