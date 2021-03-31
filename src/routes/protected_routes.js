@@ -1,6 +1,6 @@
 var express = require('express');
 var routes = express.Router();
-var playerController = require('../controller/player-controler');
+var playerController = require('../controller/player-controller');
 var clubController = require('../controller/club-controller');
 var matchController = require('../controller/match-controller');
 var participationController = require('../controller/participation-controller');
