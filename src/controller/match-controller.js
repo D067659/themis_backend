@@ -1,6 +1,6 @@
 var Match = require('../models/match');
 
-exports.registerMatch = (req, res) => {
+exports.createMatch = (req, res) => {
     if (!req.body.clubId) {
         return res.status(400).json({ 'msg': 'You need to provide a club id' });
     }

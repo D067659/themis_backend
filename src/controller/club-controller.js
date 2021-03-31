@@ -1,6 +1,6 @@
 var Club = require('../models/club');
 
-exports.registerClub = (req, res) => {
+exports.createClub = (req, res) => {
     if (!req.body.name) {
         return res.status(400).json({ 'msg': 'You need to provide a club name' });
     }

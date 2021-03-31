@@ -26,17 +26,12 @@ var PlayerSchema = new mongoose.Schema({
     },
     clubId: {
         type: ObjectId,
-        required: true,
+        required: false, // Initial registration has no clubId
         trim: true
     },
-    isAdmin: {
-        type: Boolean,
-        required: true,
-        trim: true
-    },
-    fingerprintToken: {
+    role: {
         type: String,
-        required: false,
+        required: false, // Without clubId role cannot be set
         trim: true
     }
 })

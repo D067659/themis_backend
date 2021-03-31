@@ -2,7 +2,7 @@ var Participation = require('../models/participation');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
-exports.registerParticipation = (req, res) => {
+exports.createParticipation = (req, res) => {
     if (!req.body.playerId) {
         return res.status(400).json({ 'msg': 'You need to provide a player id' });
     }
