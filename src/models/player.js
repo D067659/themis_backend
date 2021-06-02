@@ -24,16 +24,21 @@ var PlayerSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    clubId: {
-        type: ObjectId,
-        required: false, // Initial registration has no clubId
-        trim: true
-    },
-    role: {
-        type: String,
-        required: false, // Without clubId role cannot be set
-        trim: true
-    }
+    clubs: [{
+        _id: false,
+        clubId: {
+            type: ObjectId,
+            required: false, // Without clubId role cannot be set
+            trim: true
+        },
+        role: {
+            type: String,
+            required: false, // Without clubId role cannot be set
+            trim: true
+        }
+    }],
+
+
 })
 
 PlayerSchema.pre('save', function (next) {

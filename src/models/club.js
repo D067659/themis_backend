@@ -9,9 +9,7 @@ var ClubSchema = new mongoose.Schema({
     },
     invitationCode: {
         type: String,
-        unique: true,
         required: true,
-        lowercase: true,
         trim: true
     }
 })

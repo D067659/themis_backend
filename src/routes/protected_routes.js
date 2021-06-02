@@ -16,8 +16,8 @@ routes.put('/players/:id', playerController.updatePlayer);
 // routes.delete('/player/:id', playerController.deletePlayer);
 
 // /* Club endpoints */
-// routes.get('/clubs/:id' ,clubController.getClub);
-// routes.post('/clubs', clubController.createClub);
+routes.post('/clubs', clubController.createClub);
+//routes.get('/clubs/:id', clubController.getClub);
 // routes.put('/clubs/:id', clubController.updateClub);
 // routes.delete('/clubs/:id', clubController.deleteClub);
 
