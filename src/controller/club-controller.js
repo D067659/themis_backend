@@ -21,7 +21,7 @@ exports.createClub = (req, res) => {
             if (err) {
                 return res.status(400).json({ 'msg': err })
             }
-            // Add club to player and set role admin
+            // Add club to player and set role to admin
             Player.findById(req.user._id, (err, player) => {
                 if (err || !player) {
                     return res.status(400).json({ 'msg': err });
