@@ -9,17 +9,14 @@ exports.createParticipation = (req, res) => {
 
     let newParticipation = Participation(req.body);
     newParticipation.save((err, participation) => {
-        if (err) {
-            return res.status(400).json({ 'msg': err })
-        }
+        if (err) { return res.status(400).json({ 'msg': err }); }
+
         return res.status(201).json(participation);
     });
 }
 
 exports.getParticipationsByPlayerId = (req, res) => {
-    if (!req.body.playerId) {
-        return res.status(400).json({ 'msg': 'You need to provide a player id' });
-    }
+    if (!req.body.playerId) { return res.status(400).json({ 'msg': 'You need to provide a player id' }); }
 
     Participation.aggregate([
         {
@@ -38,9 +35,8 @@ exports.getParticipationsByPlayerId = (req, res) => {
         },
         { $project: { fromMatch: 0 } }
     ], (err, response) => {
-        if (err) {
-            return res.status(500).json(err)
-        }
+        if (err) { return res.status(500).json(err) }
+
         return res.status(200).json(response)
     });
 
