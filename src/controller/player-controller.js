@@ -66,7 +66,6 @@ exports.updatePlayer = (req, res) => {
         player.password = req.body.password;
         player.name = req.body.name;
         player.clubId = req.body.clubId;;
-        //player.role = req.body.role;
 
         player.save((err, player) => {
             if (err) { return res.status(400).json({ 'msg': err }); }
@@ -74,7 +73,7 @@ exports.updatePlayer = (req, res) => {
             // do not populate password in response
             player.password = undefined;
 
-            return res.status(201).json(player);
+            return res.status(200).json(player);
         });
     });
 }

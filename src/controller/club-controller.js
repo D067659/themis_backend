@@ -2,7 +2,6 @@ var Club = require('../models/club');
 var Player = require('../models/player');
 
 exports.createClub = (req, res) => {
-    console.log('user: ', req.user)
     if (!req.body.name) {
         return res.status(400).json({ 'msg': 'You need to provide a club name' });
     }
@@ -37,10 +36,36 @@ exports.createClub = (req, res) => {
 exports.getClub = (req, res) => {
     if (!req.params.id) { return res.status(400).json({ 'msg': 'You need to specify a club' }); }
 
-    Club.findOne({ id: req.params.id }, (err, club) => {
+    Club.findById(req.params.id, (err, club) => {
         if (err) { return res.status(400).json({ 'msg': err }); }
+        if (!club) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
 
-        if (!club || !req.user.clubId.includes(club.id)) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
+        // Check if user belongs to questioned club in DB
+        const clubFound = req.user.clubs.find(userClub => userClub.clubId == club.id);
+        if (!clubFound) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
 
+        return res.status(200).json(club);
+    });
+}
+
+exports.updateClub = (req, res) => {
+    if (!req.params.id) { return res.status(400).json({ 'msg': 'You need to specify a club' }); }
+
+    Club.findById(req.params.id, (err, club) => {
+        if (err) { return res.status(400).json({ 'msg': err }); }
+        if (!club) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
+
+        // Check if user belongs to questioned club in DB
+        const clubFound = req.user.clubs.find(userClub => userClub.clubId == club.id);
+        if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ 'msg': 'The club does not exist' }); }
+
+        club.name = req.body.name;
+        club.invitationCode = req.body.invitationCode;
+
+        club.save((err, club) => {
+            if (err) { return res.status(400).json({ 'msg': err }); }
+
+            return res.status(200).json(club);
+        });
     });
 }

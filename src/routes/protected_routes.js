@@ -17,15 +17,15 @@ routes.put('/players/:id', playerController.updatePlayer);
 
 // /* Club endpoints */
 routes.post('/clubs', clubController.createClub);
-//routes.get('/clubs/:id', clubController.getClub);
-// routes.put('/clubs/:id', clubController.updateClub);
+routes.get('/clubs/:id', clubController.getClub);
+routes.put('/clubs/:id', clubController.updateClub);
 // routes.delete('/clubs/:id', clubController.deleteClub);
 
 // /* Match endpoints */
-// routes.get('/matches', matchController.getMatches);
-// routes.post('/matches', matchController.createMatch);
-// routes.put('/matches/:id', matchController.updateMatch);
-// routes.delete('/matches/:id', matchController.deleteMatch);
+routes.get('/clubs/:id/matches', matchController.getMatches);
+routes.post('/clubs/:id/matches', matchController.createMatch);
+// routes.put('/clubs/:id/matches/:matchId', matchController.updateMatch);
+// routes.delete('clubs/:id/matches/:matchId', matchController.deleteMatch);
 
 // /* Participation endpoints */
 // routes.get('/matches/:matchId/participations', participationController.getParticipation);
