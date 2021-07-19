@@ -1,10 +1,23 @@
 var Club = require('../models/club');
 var Player = require('../models/player');
 
+exports.getClub = (req, res) => {
+    if (!req.params.id) { return res.status(400).json({ 'msg': 'You need to specify a club' }); }
+
+    Club.findById(req.params.id, (err, club) => {
+        if (err) { return res.status(400).json({ 'msg': err }); }
+        if (!club) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
+
+        // Check if user belongs to questioned club in DB
+        const clubFound = req.user.clubs.find(userClub => userClub.clubId == club.id);
+        if (!clubFound) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
+
+        return res.status(200).json(club);
+    });
+}
+
 exports.createClub = (req, res) => {
-    if (!req.body.name) {
-        return res.status(400).json({ 'msg': 'You need to provide a club name' });
-    }
+    if (!req.body.name) { return res.status(400).json({ 'msg': 'You need to provide a club name' }); }
 
     Club.findOne({ name: req.body.name }, (err, club) => {
         if (err) { return res.status(400).json({ 'msg': err }); }
@@ -30,21 +43,6 @@ exports.createClub = (req, res) => {
 
             return res.status(201).json(club);
         });
-    });
-}
-
-exports.getClub = (req, res) => {
-    if (!req.params.id) { return res.status(400).json({ 'msg': 'You need to specify a club' }); }
-
-    Club.findById(req.params.id, (err, club) => {
-        if (err) { return res.status(400).json({ 'msg': err }); }
-        if (!club) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
-
-        // Check if user belongs to questioned club in DB
-        const clubFound = req.user.clubs.find(userClub => userClub.clubId == club.id);
-        if (!clubFound) { return res.status(400).json({ 'msg': 'The club does not exist' }); }
-
-        return res.status(200).json(club);
     });
 }
 

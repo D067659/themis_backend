@@ -12,7 +12,8 @@ var MatchSchema = new mongoose.Schema({
     clubId: {
         type: ObjectId,
         required: true,
-        trim: true
+        trim: true,
+        immutable: true
     },
     opponent: {
         type: String,
