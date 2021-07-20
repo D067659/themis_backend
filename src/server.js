@@ -1,5 +1,4 @@
 var express = require('express');
-var bodyParser = require('body-parser');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var config = require('./config/config');
@@ -7,10 +6,10 @@ var port = process.env.PORT || 5000;
 
 var app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
+
 var passportMiddleware = require('./middleware/passport');
 passport.use(passportMiddleware);
 

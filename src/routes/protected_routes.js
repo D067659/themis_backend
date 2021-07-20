@@ -4,7 +4,6 @@ var playerController = require('../controller/player-controller');
 var clubController = require('../controller/club-controller');
 var matchController = require('../controller/match-controller');
 var participationController = require('../controller/participation-controller');
-
 var passport = require('passport')
 
 routes.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {

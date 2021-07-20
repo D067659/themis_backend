@@ -1,9 +1,6 @@
 var Participation = require('../models/participation');
 var Club = require('../models/club');
 
-const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
-
 exports.getParticipations = (req, res) => {
     if (!req.params.id || !req.params.playerId || req.params.playerId !== req.user.id) { return res.status(400).json({ 'msg': 'You need to specify a club and a player' }); }
 
@@ -43,43 +40,43 @@ exports.createParticipation = (req, res) => {
 exports.updateParticipation = (req, res) => {
     if (!req.params.id || !req.params.matchId || !req.params.participationId) { return res.status(400).json({ 'msg': 'You need to specify a club, a match, and a participation' }); }
 
-    Participation.findOne({ clubId: req.params.id, matchId: req.params.matchId, playerId: req.user.id, _id: req.params.participationId }, (err, participation) => {
-        if (err) { return res.status(400).json({ 'msg': err }); }
-        if (!participation) { return res.status(400).json({ 'msg': 'The participation does not exist' }); }
-        console.log('found that: ', participation)
-
-        participation.hasTime = req.body.hasTime
-
-        participation.save((err, participation) => {
+    Participation.findOne({ clubId: req.params.id, matchId: req.params.matchId, playerId: req.user.id, _id: req.params.participationId },
+        (err, participation) => {
             if (err) { return res.status(400).json({ 'msg': err }); }
+            if (!participation) { return res.status(400).json({ 'msg': 'The participation does not exist' }); }
 
-            return res.status(200).json(participation);
+            participation.hasTime = req.body.hasTime
+
+            participation.save((err, participation) => {
+                if (err) { return res.status(400).json({ 'msg': err }); }
+
+                return res.status(200).json(participation);
+            });
         });
-    });
 }
 
-exports.getParticipationsByPlayerId = (req, res) => {
-    if (!req.body.playerId) { return res.status(400).json({ 'msg': 'You need to provide a player id' }); }
+// exports.getParticipationsByPlayerId = (req, res) => {
+//     if (!req.body.playerId) { return res.status(400).json({ 'msg': 'You need to provide a player id' }); }
 
-    Participation.aggregate([
-        {
-            $match: { playerId: ObjectId('5e62706adba1b65a54a21a41') }
-        },
-        {
-            $lookup: {
-                from: "matches",
-                localField: "matchId",    // field in the orders collection
-                foreignField: "_id",  // field in the items collection
-                as: "fromMatch"
-            }
-        },
-        {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromMatch", 0] }, "$$ROOT"] } }
-        },
-        { $project: { fromMatch: 0 } }
-    ], (err, response) => {
-        if (err) { return res.status(500).json(err) }
+//     Participation.aggregate([
+//         {
+//             $match: { playerId: ObjectId('5e62706adba1b65a54a21a41') }
+//         },
+//         {
+//             $lookup: {
+//                 from: "matches",
+//                 localField: "matchId",    // field in the orders collection
+//                 foreignField: "_id",  // field in the items collection
+//                 as: "fromMatch"
+//             }
+//         },
+//         {
+//             $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromMatch", 0] }, "$$ROOT"] } }
+//         },
+//         { $project: { fromMatch: 0 } }
+//     ], (err, response) => {
+//         if (err) { return res.status(500).json(err) }
 
-        return res.status(200).json(response)
-    });
-}
+//         return res.status(200).json(response)
+//     });
+// }
