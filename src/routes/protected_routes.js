@@ -12,7 +12,7 @@ routes.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
 
 /* Authentication endpoints */
 routes.put('/players/:id', playerController.updatePlayer);
-// routes.delete('/player/:id', playerController.deletePlayer);
+// routes.delete('/players/:id', playerController.deletePlayer);
 
 // /* Club endpoints */
 routes.get('/clubs/:id', clubController.getClub);
