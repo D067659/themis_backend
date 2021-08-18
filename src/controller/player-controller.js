@@ -1,9 +1,8 @@
 var Player = require('../models/player');
 var jwt = require('jsonwebtoken');
-var config = require('../config/config');
 
 function createToken(player) {
-    return jwt.sign({ id: player.id, email: player.email }, config.jwtSecret, {
+    return jwt.sign({ id: player.id, email: player.email }, process.env.JWT_SECRET, {
         expiresIn: "10h"
     });
 }

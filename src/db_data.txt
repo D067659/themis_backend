@@ -1,6 +1,0 @@
-Existing Club ID: 5e626f25a8f4725a017ab309 (TSV Reute)
-    Player Sascha ID: 5e62706adba1b65a54a21a41 (PW: test1)
-    Player Marvin ID: 5e627093dba1b65a54a21a42 (PW: test1)
-
-    Match Id: 5e62726c4dbb7c5b13e13cfe
-    Match Id: 5e6272934dbb7c5b13e13cff
