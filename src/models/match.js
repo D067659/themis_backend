@@ -20,10 +20,18 @@ var MatchSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    startTime: {
+    startDate: {
+        type: Date,
+        required: true,
+        min: Date.now()
+    },
+    isHome: {
+        type: Boolean,
+        required: true
+    },
+    meetingPoint: {
         type: String,
-        required: false,
-        trim: true
+        required: true
     }
 })
 

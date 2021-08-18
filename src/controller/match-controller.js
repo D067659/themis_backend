@@ -4,16 +4,15 @@ var Club = require('../models/club');
 exports.getMatches = (req, res) => {
     if (!req.params.id) { return res.status(400).json({ 'msg': 'You need to specify a club' }); }
 
-    Match.find({ clubId: req.params.id }, (err, matches) => {
+    Match.find({ clubId: req.params.id, startDate: { $gte: Date.now() } }, (err, matches) => {
         if (err) { return res.status(400).json({ 'msg': err }); }
-        if (matches.length < 1) { return res.status(400).json({ 'msg': 'The matches do not exist' }); }
 
         // Check if user belongs to the club for the very first questioned match in DB
         const clubFound = req.user.clubs.find(userClub => userClub.clubId == req.params.id);
         if (!clubFound) { return res.status(400).json({ 'msg': 'The matches do not exist' }); }
 
         return res.status(200).json(matches);
-    });
+    }).sort({ startDate: 'ascending' });
 }
 
 exports.createMatch = (req, res) => {
@@ -55,7 +54,9 @@ exports.updateMatch = (req, res) => {
 
             match.city = req.body.city;
             match.opponent = req.body.opponent;
-            match.startTime = req.body.startTime;
+            match.startDate = req.body.startDate;
+            match.isHome = req.body.isHome;
+            match.meetingPoint = req.body.meetingPoint;
 
             match.save((err, match) => {
                 if (err) { return res.status(400).json({ 'msg': err }) }

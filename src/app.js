@@ -2,12 +2,14 @@ var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var config = require('./config/config');
-var app = express();
+var cors = require('cors')
 var passportMiddleware = require('./middleware/passport');
 var protected_routes = require('./routes/protected_routes');
 var public_routes = require('./routes/public_routes');
+var app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 passport.use(passportMiddleware);

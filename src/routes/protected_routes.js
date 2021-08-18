@@ -27,9 +27,9 @@ routes.put('/clubs/:id/matches/:matchId', matchController.updateMatch);
 // routes.delete('clubs/:id/matches/:matchId', matchController.deleteMatch);
 
 // /* Participation endpoints */
-routes.get('/clubs/:id/players/:playerId/participations', participationController.getParticipations);
+routes.get('/clubs/:id/matches/:matchId/participations', participationController.getParticipations);
 routes.post('/clubs/:id/matches/:matchId/participations', participationController.createParticipation);
-routes.put('/clubs/:id/matches/:matchId/participations/:participationId', participationController.updateParticipation);
+routes.put('/clubs/:id/matches/:matchId/participations', participationController.updateParticipation);
 
 // Following route might not required anymore if we do not join collections as initially intended
 //routes.post('/participations', participationController.getParticipationsByPlayerId); 

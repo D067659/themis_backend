@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
@@ -59,9 +59,10 @@ PlayerSchema.pre('save', function (next) {
 })
 
 PlayerSchema.methods.comparePassword = function (candiatePassword, cb) {
-    bcrypt.compare(candiatePassword, this.password, (err, isMatch) => {
+    bcrypt.compare(candiatePassword, this.password, (err, res) => {
         if (err) return cb(err);
-        cb(null, isMatch);
+
+        cb(null, res);
     })
 }
 
