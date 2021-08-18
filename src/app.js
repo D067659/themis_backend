@@ -1,7 +1,6 @@
 var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
-var config = require('./config/config');
 var cors = require('cors')
 var passportMiddleware = require('./middleware/passport');
 var protected_routes = require('./routes/protected_routes');
@@ -16,7 +15,7 @@ passport.use(passportMiddleware);
 app.use('/api', passport.authenticate('jwt', { session: false }), protected_routes);
 app.use('/', public_routes);
 
-const DB_URL = (process.env.NODE_ENV === 'test') ? config.db_test : config.db_prod;
+const DB_URL = (process.env.NODE_ENV === 'test') ? process.env.DB_TEST_URL : process.env.DB_PROD_URL
 mongoose.connect(DB_URL, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
 const connection = mongoose.connection;
