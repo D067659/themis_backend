@@ -54,7 +54,7 @@ exports.loginPlayer = (req, res) => {
 exports.updatePlayer = (req, res) => {
     if (!req.body.email || !req.body.password) { return res.status(400).json({ 'msg': 'You need to send email and password' }); }
 
-    if (req.user.id !== req.params.id) { return res.status(403).json({ 'msg': 'You can only change your own personal profile' }); }
+    if (req.user.id !== req.params.id) { return res.status(400).json({ 'msg': 'You can only change your own personal profile' }); }
 
     Player.findById(req.params.id, (err, player) => {
         if (err) { return res.status(400).json({ 'msg': err }); }
