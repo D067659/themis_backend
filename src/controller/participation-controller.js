@@ -14,7 +14,7 @@ exports.getParticipations = (req, res) => {
 }
 
 exports.createParticipation = (req, res) => {
-    if (!req.params.id || !req.params.matchId) { return res.status(400).json({ 'msg': 'You need to provide a club and a match' }); }
+    if (!req.params.id || !req.params.matchId) { return res.status(400).json({ 'msg': { 'message': 'You need to provide a club and a match' } }); }
 
     Club.findById(req.params.id, (err, club) => {
         if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
@@ -26,7 +26,7 @@ exports.createParticipation = (req, res) => {
 
         let newParticipation = Participation(req.body);
         newParticipation.save((err, participation) => {
-            if (err) { return res.status(400).json({ 'msg': err }); }
+            if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
 
             return res.status(201).json(participation);
         });
@@ -34,7 +34,7 @@ exports.createParticipation = (req, res) => {
 }
 
 exports.updateParticipation = (req, res) => {
-    if (!req.params.id || !req.params.matchId) { return res.status(400).json({ 'msg': 'You need to specify a club, a match, and a participation' }); }
+    if (!req.params.id || !req.params.matchId) { return res.status(400).json({ 'msg': { 'message': 'You need to specify a club, a match, and a participation' } }); }
     Participation.findOneAndUpdate({ clubId: req.params.id, matchId: req.params.matchId, playerId: req.user.id }, req.body, { upsert: true, new: true, runValidators: true })
         .then((updatedStatus) => {
             res.json(updatedStatus);
@@ -46,17 +46,17 @@ exports.updateParticipation = (req, res) => {
 
 
 exports.updateParticipationX = (req, res) => {
-    if (!req.params.id || !req.params.matchId) { return res.status(400).json({ 'msg': 'You need to specify a club, a match, and a participation' }); }
+    if (!req.params.id || !req.params.matchId) { return res.status(400).json({ 'msg': { 'message': 'You need to specify a club, a match, and a participation' } }); }
 
     Participation.findOne({ clubId: req.params.id, matchId: req.params.matchId, playerId: req.user.id },
         (err, participation) => {
-            if (err) { return res.status(400).json({ 'msg': err }); }
-            if (!participation) { return res.status(400).json({ 'msg': 'The participation does not exist' }); }
+            if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
+            if (!participation) { return res.status(400).json({ 'msg': { 'message': 'The participation does not exist' } }); }
 
             participation.hasTime = req.body.hasTime
 
             participation.save((err, participation) => {
-                if (err) { return res.status(400).json({ 'msg': err }); }
+                if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
 
                 return res.status(200).json(participation);
             });
