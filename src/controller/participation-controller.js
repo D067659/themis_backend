@@ -1,8 +1,8 @@
 var Participation = require('../models/participation');
 var Club = require('../models/club');
 
-exports.getParticipations = (req, res) => {
-    if (!req.params.id || !req.params.matchId) {
+exports.getOwnParticipation = (req, res) => {
+    if (!req.params.id || !req.params.matchId || req.params.playerId !== req.user.id) {
         return res.status(400).json({ 'msg': { 'message': 'You need to specify a club, a player, and a match' } });
     }
 
@@ -10,6 +10,28 @@ exports.getParticipations = (req, res) => {
         if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
 
         return res.status(200).json(participation);
+    });
+}
+
+exports.getParticipations = (req, res) => {
+    if (!req.params.id || !req.params.matchId) {
+        return res.status(400).json({ 'msg': { 'message': 'You need to specify a club and a match' } });
+    }
+
+    Club.findById(req.params.id, (err, club) => {
+        if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
+        if (!club) { return res.status(400).json({ 'msg': { 'message': 'The club does not exist' } }); }
+
+        // Check if user belongs to questioned club in DB
+        const clubFound = req.user.clubs.find(userClub => userClub.clubId == club.id);
+        if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ 'msg': { 'message': 'The club does not exist' } }); }
+
+        Participation.find({ clubId: req.params.id, matchId: req.params.matchId }, (err, participation) => {
+            if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
+
+            return res.status(200).json(participation);
+        });
+
     });
 }
 

@@ -16,6 +16,7 @@ routes.put('/players/:id', playerController.updatePlayer);
 
 // /* Club endpoints */
 routes.get('/clubs/:id', clubController.getClub);
+routes.get('/clubs/:id/players', playerController.getPlayersForClub);
 routes.post('/clubs', clubController.createClub);
 routes.put('/clubs/:id', clubController.updateClub);
 // routes.delete('/clubs/:id', clubController.deleteClub);
@@ -27,6 +28,7 @@ routes.put('/clubs/:id/matches/:matchId', matchController.updateMatch);
 // routes.delete('clubs/:id/matches/:matchId', matchController.deleteMatch);
 
 // /* Participation endpoints */
+routes.get('/clubs/:id/matches/:matchId/participations/:playerId', participationController.getOwnParticipation);
 routes.get('/clubs/:id/matches/:matchId/participations', participationController.getParticipations);
 routes.post('/clubs/:id/matches/:matchId/participations', participationController.createParticipation);
 routes.put('/clubs/:id/matches/:matchId/participations', participationController.updateParticipation);

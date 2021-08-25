@@ -1,9 +1,13 @@
 var Player = require('../models/player');
 var jwt = require('jsonwebtoken');
 
+function getExpireHours() {
+    return 10
+}
+
 function createToken(player) {
     return jwt.sign({ id: player.id, email: player.email }, process.env.JWT_SECRET, {
-        expiresIn: "10h"
+        expiresIn: getExpireHours() + 'h'
     });
 }
 
@@ -42,7 +46,8 @@ exports.loginPlayer = (req, res) => {
                 delete user._doc.password;
                 return res.status(200).json({
                     ...user._doc,
-                    token: createToken(player)
+                    token: createToken(player),
+                    expiresInHours: getExpireHours()
                 });
             } else {
                 return res.status(400).json({ 'msg': { 'message': 'The email and password dont match' } });
@@ -76,5 +81,21 @@ exports.updatePlayer = (req, res) => {
 
             return res.status(200).json(player);
         });
+    });
+}
+
+
+exports.getPlayersForClub = (req, res) => {
+    if (!req.params.id) { return res.status(400).json({ 'msg': { 'message': 'You need to specify a club' } }); }
+
+    Player.find({ "clubs.clubId": req.params.id }, (err, players) => {
+        if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
+        if (!players) { return res.status(400).json({ 'msg': { 'message': 'The club does not exist' } }); }
+
+        // Check if user belongs to questioned club in DB
+        const clubFound = req.user.clubs.find(userClub => userClub.clubId == req.params.id);
+        if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ 'msg': { 'message': 'No players exist' } }); }
+
+        return res.status(200).json(players);
     });
 }
