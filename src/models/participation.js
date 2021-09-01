@@ -9,7 +9,7 @@ var ParticipationSchema = new mongoose.Schema({
         type: ObjectId,
         required: true,
         trim: true,
-        unique: true,
+        unique: false,
         immutable: true
     },
     clubId: {
@@ -29,7 +29,8 @@ var ParticipationSchema = new mongoose.Schema({
     hasTime: {
         type: Boolean,
         trim: true,
-        unique: false
+        unique: false,
+        default: null
     }
 })
 
