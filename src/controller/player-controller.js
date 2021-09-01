@@ -92,6 +92,10 @@ exports.getPlayersForClub = (req, res) => {
         if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
         if (!players) { return res.status(400).json({ 'msg': { 'message': 'The club does not exist' } }); }
 
+        // Mongoose type to JS object for deleting password
+        players = players.map((p) => p.toObject());
+        players.forEach((p) => { delete p.password; });
+
         // Check if user belongs to questioned club in DB
         const clubFound = req.user.clubs.find(userClub => userClub.clubId == req.params.id);
         if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ 'msg': { 'message': 'No players exist' } }); }

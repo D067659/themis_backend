@@ -16,13 +16,13 @@ routes.put('/players/:id', playerController.updatePlayer);
 
 // /* Club endpoints */
 routes.get('/clubs/:id', clubController.getClub);
-routes.get('/clubs/:id/players', playerController.getPlayersForClub);
+routes.get('/clubs/:id/players', playerController.getPlayersForClub); // ADMIN ENDPOINT 
 routes.post('/clubs', clubController.createClub);
 routes.put('/clubs/:id', clubController.updateClub);
 // routes.delete('/clubs/:id', clubController.deleteClub);
 
 // /* Match endpoints */
-routes.get('/clubs/:id/matches', matchController.getMatches);
+routes.get('/clubs/:id/matches', matchController.getMatches); // NOT IN USE NOW 
 routes.post('/clubs/:id/matches', matchController.createMatch);
 routes.put('/clubs/:id/matches/:matchId', matchController.updateMatch);
 // routes.delete('clubs/:id/matches/:matchId', matchController.deleteMatch);
