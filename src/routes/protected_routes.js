@@ -17,6 +17,7 @@ routes.put('/players/:id', playerController.updatePlayer);
 // /* Club endpoints */
 routes.get('/clubs/:id', clubController.getClub);
 routes.get('/clubs/:id/players', playerController.getPlayersForClub); // ADMIN ENDPOINT 
+routes.post('/clubs/:id/players', playerController.addPlayerToClub);  // ADMIN ENDPOINT 
 routes.post('/clubs', clubController.createClub);
 routes.put('/clubs/:id', clubController.updateClub);
 // routes.delete('/clubs/:id', clubController.deleteClub);

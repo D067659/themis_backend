@@ -9,19 +9,19 @@ var PlayerSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
-        required: true,
+        required: false,
         lowercase: true,
         trim: true
     },
     password: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
     name: {
         type: String,
         unique: false,
-        required: true,
+        required: false,
         trim: true
     },
     clubs: [{
@@ -37,6 +37,16 @@ var PlayerSchema = new mongoose.Schema({
             trim: true
         }
     }],
+    status: {
+        type: String,
+        enum: ['pending', 'active'],
+        default: 'pending'
+    },
+    confirmationCode: {
+        type: String,
+        unique: true,
+        required: true
+    },
 
 
 })
@@ -44,7 +54,7 @@ var PlayerSchema = new mongoose.Schema({
 PlayerSchema.pre('save', function (next) {
     var user = this;
 
-    if (!user.isModified('password')) return next();
+    if (!user.isModified('password') || (!user.password)) return next();
 
     bcrypt.genSalt(10, function (err, salt) {
         if (err) return next(err);

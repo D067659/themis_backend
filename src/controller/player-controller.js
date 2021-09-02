@@ -1,6 +1,6 @@
 var Player = require('../models/player');
 var jwt = require('jsonwebtoken');
-
+var nodemailer = require('../config/nodemailer.config');
 function getExpireHours() {
     return 10
 }
@@ -10,6 +10,16 @@ function createToken(player) {
         expiresIn: getExpireHours() + 'h'
     });
 }
+
+function createConfirmationCode() {
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let token = '';
+    for (let i = 0; i < 25; i++) {
+        token += characters[Math.floor(Math.random() * characters.length)];
+    }
+    return token;
+}
+
 
 exports.createPlayer = (req, res) => {
     if (!req.body.email || !req.body.password) { return res.status(400).json({ 'msg': { 'message': 'You need to send email and password' } }); }
@@ -35,6 +45,8 @@ exports.loginPlayer = (req, res) => {
         if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
 
         if (!player) { return res.status(400).json({ 'msg': { 'message': 'The player does not exist' } }); }
+
+        if (player.status !== 'active') { return res.status(401).json({ 'msg': { 'message': 'Registration pending. Please verify your email' } }); }
 
         // create a user a new user
         var user = new Player(player);
@@ -102,4 +114,70 @@ exports.getPlayersForClub = (req, res) => {
 
         return res.status(200).json(players);
     });
+}
+
+exports.checkPlayerData = async (req, res) => {
+    if (!req.params.clubId || !req.params.confirmationCode) { return res.status(400).json({ 'msg': { 'message': 'You need to provide a club and confirmation code' } }); }
+
+    let player = await Player.findOne({ confirmationCode: req.params.confirmationCode });
+    if (player) {  // no registration, only add to club
+        delete player.password;
+        return res.status(200).json(player);
+    } else { // promt user to register
+        return res.status(400).json({ 'msg': { 'message': 'No player found for the given confirmation code' } });
+    }
+}
+
+exports.confirmClubMembership = async (req, res) => {
+    if (!req.params.clubId || !req.params.confirmationCode) { return res.status(400).json({ 'msg': { 'message': 'You need to provide a club and confirmation code' } }); }
+
+    let player = await Player.findOne({ confirmationCode: req.params.confirmationCode });
+    if (player) {  // no registration, only add to club
+        const clubFound = player.clubs.find(userClub => userClub.clubId == req.params.clubId);
+        if (clubFound) { return res.status(400).json({ 'msg': { 'message': 'You are already a member of this club' } }); }
+        player.clubs.push({ clubId: req.params.clubId, role: 'member' });
+        player.status = "active";
+        if (req.body.email) { player.email = req.body.email; }
+        if (req.body.name) { player.name = req.body.name; }
+        if (req.body.password) { player.password = req.body.password; }
+        await player.save();
+        delete player.password;
+        return res.status(200).json(player);
+    } else { // promt user to register
+        return res.status(400).json({ 'msg': { 'message': 'No player found for the given confirmation code' } });
+    }
+}
+
+exports.addPlayerToClub = async (req, res) => {
+    if (!req.params.id | !req.body.clubName | !req.body.receiverName | !req.body.receiverEmail) { return res.status(400).json({ 'msg': { 'message': 'You need to specify proper information' } }); }
+
+    // Check if user belongs to questioned club in DB
+    const clubFound = req.user.clubs.find(userClub => userClub.clubId == req.params.id);
+    if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ 'msg': { 'message': 'No club exist' } }); }
+
+    let player = await Player.findOne({ email: req.body.email });
+    const confirmationCode = createConfirmationCode()
+    if (!player) {
+        player = await Player.create({
+            confirmationCode
+        });
+    } else {
+        const partOfClub = player.clubs.find(userClub => userClub.clubId == req.params.id);
+        if (partOfClub) { return res.status(400).json({ 'msg': { 'message': 'Player already member of club' } }); }
+        player.confirmationCode = confirmationCode;
+    }
+    await player.save();
+    player = player.toObject();
+    delete player.password;
+
+    nodemailer.sendConfirmationEmail(
+        req.user.name,
+        req.params.id,
+        req.body.clubName,
+        req.body.receiverName,
+        req.body.receiverEmail,
+        confirmationCode
+    );
+    return res.status(201).json({ player })
+
 }
