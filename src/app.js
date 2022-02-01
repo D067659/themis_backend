@@ -8,13 +8,7 @@ var public_routes = require('./routes/public_routes');
 var app = express();
 
 app.use(express.json());
-app.use(cors());
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://themis-sport.web.app");
-    res.header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-    next();
-});
+// app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 passport.use(passportMiddleware);
