@@ -9,7 +9,7 @@ routes.get('/clubs/:clubId/confirm/:confirmationCode', playerController.checkPla
 routes.post('/clubs/:clubId/confirm/:confirmationCode', playerController.confirmClubMembership);
 
 routes.get('/health', (req, res) => {
-    res.send('App is up and running!')
+    res.send('App is up and running yes!')
 })
 
 module.exports = routes;
