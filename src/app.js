@@ -8,8 +8,8 @@ var public_routes = require('./routes/public_routes');
 var app = express();
 
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(passport.initialize());
 passport.use(passportMiddleware);
 app.use('/api', passport.authenticate('jwt', { session: false }), protected_routes);
