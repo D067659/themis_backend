@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(passport.initialize());
 passport.use(passportMiddleware);
+
 app.use('/api', passport.authenticate('jwt', { session: false }), protected_routes);
 app.use('/', public_routes);
 
