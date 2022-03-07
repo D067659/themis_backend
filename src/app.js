@@ -9,18 +9,8 @@ var app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    maxAge: 86400, // Set the browser cache time for preflight responses
-    preflightContinue: true // Allow us to manually add to preflights
-}));
+app.use(cors());
 
-// Add cache-control to preflight responses in a separate middleware:
-app.use((req, res, next) => {
-    if (req.method === 'OPTIONS') {
-        res.setHeader('Cache-Control', 'public, max-age=86400');
-        res.end(); // No Vary required: cors sets it already set automatically
-    } else { next(); }
-});
 app.use(passport.initialize());
 passport.use(passportMiddleware);
 
