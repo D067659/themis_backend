@@ -1,21 +1,20 @@
-var Player = require('../models/player');
-var JwtStrategy = require('passport-jwt').Strategy,
-    ExtractJwt = require('passport-jwt').ExtractJwt;
+const Player = require('../models/player');
+const JwtStrategy = require('passport-jwt').Strategy;
+const { ExtractJwt } = require('passport-jwt');
 
-var opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET
-}
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
+};
 
-module.exports = new JwtStrategy(opts, function (jwt_payload, done) {
-    Player.findById(jwt_payload.id, function (err, player) {
-        if (err) {
-            return done(err, false);
-        }
-        if (player) {
-            return done(null, player);
-        } else {
-            return done(null, false)
-        }
-    })
-})
+module.exports = new JwtStrategy(opts, ((jwt_payload, done) => {
+  Player.findById(jwt_payload.id, (err, player) => {
+    if (err) {
+      return done(err, false);
+    }
+    if (player) {
+      return done(null, player);
+    }
+    return done(null, false);
+  });
+}));

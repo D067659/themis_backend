@@ -1,6 +1,7 @@
-var express = require('express');
-var routes = express.Router();
-var playerController = require('../controller/player-controller');
+const express = require('express');
+
+const routes = express.Router();
+const playerController = require('../controller/player-controller');
 
 /* Authentication endpoints */
 routes.post('/login', playerController.loginPlayer);
@@ -9,7 +10,7 @@ routes.get('/clubs/:clubId/confirm/:confirmationCode', playerController.checkPla
 routes.post('/clubs/:clubId/confirm/:confirmationCode', playerController.confirmClubMembership);
 
 routes.get('/health', (req, res) => {
-    res.send('App is up and running!')
-})
+  res.send('App is up and running!');
+});
 
 module.exports = routes;

@@ -1,40 +1,40 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+
 mongoose.set('useFindAndModify', false);
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
+const { Schema } = mongoose;
+const { ObjectId } = Schema;
 
-var ParticipationSchema = new mongoose.Schema({
+const ParticipationSchema = new mongoose.Schema({
 
-    playerId: {
-        type: ObjectId,
-        required: true,
-        trim: true,
-        unique: false,
-        immutable: true
-    },
-    clubId: {
-        type: ObjectId,
-        required: true,
-        trim: true,
-        unique: false,
-        immutable: true
-    },
-    matchId: {
-        type: ObjectId,
-        required: true,
-        trim: true,
-        unique: false,
-        immutable: true
-    },
-    hasTime: {
-        type: Boolean,
-        trim: true,
-        unique: false,
-        default: null
-    }
-})
+  playerId: {
+    type: ObjectId,
+    required: true,
+    trim: true,
+    unique: false,
+    immutable: true,
+  },
+  clubId: {
+    type: ObjectId,
+    required: true,
+    trim: true,
+    unique: false,
+    immutable: true,
+  },
+  matchId: {
+    type: ObjectId,
+    required: true,
+    trim: true,
+    unique: false,
+    immutable: true,
+  },
+  hasTime: {
+    type: Boolean,
+    trim: true,
+    unique: false,
+    default: null,
+  },
+});
 
-ParticipationSchema.index({ playerId: 1, matchId: 1 }, { unique: true })
+ParticipationSchema.index({ playerId: 1, matchId: 1 }, { unique: true });
 
-
-module.exports = mongoose.model('Participation', ParticipationSchema)
+module.exports = mongoose.model('Participation', ParticipationSchema);
