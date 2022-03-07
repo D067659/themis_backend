@@ -19,7 +19,7 @@ exports.getClub = (req, res) => {
 exports.createClub = (req, res) => {
     if (!req.body.name) { return res.status(400).json({ 'msg': { 'message': 'You need to provide a club name' } }); }
 
-    Club.findOne({ name: req.body.name }, (err, club) => {
+    Club.findOne({ name: { $eq: req.body.name } }, (err, club) => {
         if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
 
         if (club) { return res.status(400).json({ 'msg': { 'message': 'The club already exists' } }); }

@@ -24,7 +24,7 @@ function createConfirmationCode() {
 exports.createPlayer = (req, res) => {
     if (!req.body.email || !req.body.password) { return res.status(400).json({ 'msg': { 'message': 'You need to send email and password' } }); }
 
-    Player.findOne({ email: req.body.email }, (err, player) => {
+    Player.findOne({ email: { $eq: req.body.email } }, (err, player) => {
         if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
 
         if (player) { return res.status(400).json({ 'msg': { 'message': 'The player already exists' } }); }
@@ -41,7 +41,7 @@ exports.createPlayer = (req, res) => {
 exports.loginPlayer = (req, res) => {
     if (!req.body.email || !req.body.password) { return res.status(400).json({ 'msg': { 'message': 'You need to send email and password' } }); }
 
-    Player.findOne({ email: req.body.email }, (err, player) => {
+    Player.findOne({ email: { $eq: req.body.email } }, (err, player) => {
         if (err) { return res.status(400).json({ 'msg': { 'message': err } }); }
 
         if (!player) { return res.status(400).json({ 'msg': { 'message': 'The player does not exist' } }); }
@@ -155,12 +155,10 @@ exports.addPlayerToClub = async (req, res) => {
     const clubFound = req.user.clubs.find(userClub => userClub.clubId == req.params.id);
     if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ 'msg': { 'message': 'No club exist' } }); }
 
-    let player = await Player.findOne({ email: req.body.email });
+    let player = await Player.findOne({ email: { $eq: req.body.email } });
     const confirmationCode = createConfirmationCode()
     if (!player) {
-        player = await Player.create({
-            confirmationCode
-        });
+        player = await Player.create({ confirmationCode });
     } else {
         const partOfClub = player.clubs.find(userClub => userClub.clubId == req.params.id);
         if (partOfClub) { return res.status(400).json({ 'msg': { 'message': 'Player already member of club' } }); }
