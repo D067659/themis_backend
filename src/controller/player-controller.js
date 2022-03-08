@@ -188,8 +188,7 @@ exports.removePlayerFromClub = async (req, res) => {
   if (!playerToDelete) { return res.status(400).json({ msg: { message: 'The player does not exist' } }); }
 
   playerToDelete.clubs = playerToDelete.clubs.filter((el) => el.clubId.toString() !== req.params.id);
-
   playerToDelete.save();
 
-  return res.status(202).json({});
+  return res.status(202).json({ status: 'removed' });
 };
