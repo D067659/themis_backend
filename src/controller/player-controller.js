@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const jwt = require('jsonwebtoken');
 const Player = require('../models/player');
 const nodemailer = require('../config/nodemailer.config');
@@ -107,7 +108,7 @@ exports.getPlayersForClub = (req, res) => {
     players.forEach((p) => { delete p.password; });
 
     // Check if user belongs to questioned club in DB
-    const clubFound = req.user.clubs.find((userClub) => userClub.clubId == req.params.id);
+    const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === req.params.id);
     if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'No players exist' } }); }
 
     return res.status(200).json(players);
@@ -130,7 +131,7 @@ exports.confirmClubMembership = async (req, res) => {
 
   const player = await Player.findOne({ confirmationCode: req.params.confirmationCode });
   if (player) { // no registration, only add to club
-    const clubFound = player.clubs.find((userClub) => userClub.clubId == req.params.clubId);
+    const clubFound = player.clubs.find((userClub) => userClub.clubId.toString() === req.params.clubId);
     if (clubFound) { return res.status(400).json({ msg: { message: 'You are already a member of this club' } }); }
     player.clubs.push({ clubId: req.params.clubId, role: 'member' });
     player.status = 'active';
@@ -148,7 +149,7 @@ exports.addPlayerToClub = async (req, res) => {
   if (!req.params.id || !req.body.clubName || !req.body.receiverName || !req.body.receiverEmail) { return res.status(400).json({ msg: { message: 'You need to specify proper information' } }); }
 
   // Check if user belongs to questioned club in DB
-  const clubFound = req.user.clubs.find((userClub) => userClub.clubId == req.params.id);
+  const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === req.params.id);
   if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'No club exist' } }); }
 
   let player = await Player.findOne({ email: { $eq: req.body.email } });
@@ -156,7 +157,7 @@ exports.addPlayerToClub = async (req, res) => {
   if (!player) {
     player = await Player.create({ confirmationCode });
   } else {
-    const partOfClub = player.clubs.find((userClub) => userClub.clubId == req.params.id);
+    const partOfClub = player.clubs.find((userClub) => userClub.clubId.toString() === req.params.id);
     if (partOfClub) { return res.status(400).json({ msg: { message: 'Player already member of club' } }); }
     player.confirmationCode = confirmationCode;
   }
@@ -173,4 +174,22 @@ exports.addPlayerToClub = async (req, res) => {
     confirmationCode,
   );
   return res.status(201).json({ player });
+};
+
+exports.removePlayerFromClub = async (req, res) => {
+  if (!req.params.id || !req.params.playerId) { return res.status(400).json({ msg: { message: 'You need to specify a club ID and player ID' } }); }
+
+  // Check if user belongs to questioned club in DB
+  const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === req.params.id);
+  if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'No club exist' } }); }
+
+  let playerToDelete = await Player.findById(req.params.playerId);
+
+  if (!playerToDelete) { return res.status(400).json({ msg: { message: 'The player does not exist' } }); }
+
+  playerToDelete.clubs = playerToDelete.clubs.filter((el) => el.clubId.toString() !== req.params.id);
+
+  playerToDelete.save();
+
+  return res.status(202).json({});
 };

@@ -23,7 +23,7 @@ exports.createMatch = (req, res) => {
     if (!club) { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
 
     // Check if user belongs to questioned club in DB
-    const clubFound = req.user.clubs.find((userClub) => userClub.clubId == club.id);
+    const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === club.id);
     if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
 
     const newMatch = Match(req.body);
@@ -43,7 +43,7 @@ exports.updateMatch = (req, res) => {
     if (!club) { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
 
     // Check if user belongs to questioned club in DB
-    const clubFound = req.user.clubs.find((userClub) => userClub.clubId == club.id);
+    const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === club.id);
     if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
 
     // Check if provided match id exists
