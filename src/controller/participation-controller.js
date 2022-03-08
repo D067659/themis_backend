@@ -57,7 +57,11 @@ exports.createParticipation = (req, res) => {
 exports.updateParticipation = (req, res) => {
   if (!req.params.id || !req.params.matchId) { return res.status(400).json({ msg: { message: 'You need to specify a club, a match, and a participation' } }); }
 
-  const updateParticipation = Participation(req.body);
+  const updateParticipation = {
+    clubId: req.body.clubId,
+    matchId: req.body.matchId,
+    hasTime: req.body.hasTime,
+  };
 
   Participation.findOneAndUpdate({ clubId: req.params.id, matchId: req.params.matchId, playerId: req.user.id }, updateParticipation, { upsert: true, new: true, runValidators: true })
     .then((updatedStatus) => {
