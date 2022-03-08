@@ -4,3 +4,6 @@ npm-debug.log
 .env
 .DS_Store
 .eslintcache
+.eslint-release-info.json
+.temp-eslintcache
+.eslintcache
