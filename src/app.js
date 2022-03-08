@@ -4,9 +4,11 @@ const helmet = require('helmet');
 const passport = require('passport');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const cron = require('node-cron');
 const passportMiddleware = require('./middleware/passport');
 const protectedRoutes = require('./routes/protected_routes');
 const publicRoutes = require('./routes/public_routes');
+const croneController = require('./controller/crone-controller');
 
 const app = express();
 
@@ -39,6 +41,11 @@ connection.once('open', () => {
 connection.on('error', (err) => {
   console.log(`MongoDB connection error. Please make sure MongoDB is running. ${err}`);
   process.exit();
+});
+
+// Cron job to regularly delete outdated matches and participations
+cron.schedule('59 23 * * 0', () => { // Runs every sunday at 23:59
+  croneController.deleteOutdatedMatchesAndParticipations();
 });
 
 module.exports = app;

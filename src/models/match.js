@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ParticipationSchema = require('./participation');
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema;
@@ -33,6 +34,13 @@ const MatchSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+});
+
+MatchSchema.pre('deleteOne', async function (next) {
+  console.log('Pre-hook to delete all participations');
+  const participations = await ParticipationSchema.deleteMany({ matchId: this._conditions._id });
+  console.log('done removing deprecated participations. Delete count: ', participations.deletedCount);
+  next();
 });
 
 module.exports = mongoose.model('Match', MatchSchema);
