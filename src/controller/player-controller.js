@@ -145,7 +145,7 @@ exports.confirmClubMembership = async (req, res) => {
 };
 
 exports.addPlayerToClub = async (req, res) => {
-  if (!req.params.id | !req.body.clubName | !req.body.receiverName | !req.body.receiverEmail) { return res.status(400).json({ msg: { message: 'You need to specify proper information' } }); }
+  if (!req.params.id || !req.body.clubName || !req.body.receiverName || !req.body.receiverEmail) { return res.status(400).json({ msg: { message: 'You need to specify proper information' } }); }
 
   // Check if user belongs to questioned club in DB
   const clubFound = req.user.clubs.find((userClub) => userClub.clubId == req.params.id);
