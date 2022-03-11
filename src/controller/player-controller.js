@@ -109,7 +109,7 @@ exports.getPlayersForClub = (req, res) => {
 
     // Check if user belongs to questioned club in DB
     const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === req.params.id);
-    if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'No players exist' } }); }
+    if (!clubFound) { return res.status(400).json({ msg: { message: 'No players exist' } }); }
 
     return res.status(200).json(players);
   });
