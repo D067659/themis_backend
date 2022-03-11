@@ -141,7 +141,7 @@ exports.confirmClubMembership = async (req, res) => {
     await player.save();
     delete player.password;
     return res.status(200).json(player);
-  } // promt user to register
+  }
   return res.status(400).json({ msg: { message: 'No player found for the given confirmation code' } });
 };
 
@@ -152,8 +152,9 @@ exports.addPlayerToClub = async (req, res) => {
   const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === req.params.id);
   if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'No club exist' } }); }
 
-  let player = await Player.findOne({ email: { $eq: req.body.email } });
+  let player = await Player.findOne({ email: { $eq: req.body.receiverEmail } });
   const confirmationCode = createConfirmationCode();
+  console.log('player found (addPlayerToClub): ', player);
   if (!player) {
     player = await Player.create({ confirmationCode });
   } else {
