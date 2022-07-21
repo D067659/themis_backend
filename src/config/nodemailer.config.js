@@ -91,10 +91,11 @@ module.exports.sendConfirmationEmail = (senderName, senderClubId, senderClubName
                                 <tr>
                                     <td>
                                         <a href="mailto:vereinmanagement@gmail.com">
-                                            <img src="cid:emailIMG" alt="E-Mail" width="38" height="38"
+                                            <img src="cid:emailIMG" alt="E-Mail" width="45" height="45"
                                                 style="display: block;" border="0" />
                                         </a>
                                     </td>
+                                    <td style="font-size: 0; line-height: 0; background-color: #ee4c50;" width="20">
                                     <td>
                                         <a href=${process.env.URL_HOST_FRONTEND}>
                                             <img src="cid:websiteIMG" alt="Website" width="38" height="38"
