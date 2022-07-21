@@ -5,34 +5,34 @@ const user = process.env.MAIL_SENDER_ID;
 const pass = process.env.MAIL_SENDER_PW;
 
 const transport = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user,
-    pass,
-  },
+    service: 'Gmail',
+    auth: {
+        user,
+        pass,
+    },
 });
 
 module.exports.sendConfirmationEmail = (senderName, senderClubId, senderClubName, receiverName, receiverEmail, confirmationCode) => {
-  transport.sendMail({
-    from: user,
-    to: receiverEmail,
-    subject: `Themis: Deine Einladung zu ${senderClubName}`,
-    attachments: [{
-      filename: 'sports.png',
-      path: path.join(__dirname, '../') + 'images/sports.png',
-      cid: 'sportIMG'
-    },
-    {
-      filename: 'website.png',
-      path: path.join(__dirname, '../') + 'images/website.png',
-      cid: 'websiteIMG'
-    },
-    {
-      filename: 'email.png',
-      path: path.join(__dirname, '../') + 'images/email.png',
-      cid: 'emailIMG'
-    }],
-    html: `
+    transport.sendMail({
+        from: user,
+        to: receiverEmail,
+        subject: `Themis: Deine Einladung zu ${senderClubName}`,
+        attachments: [{
+            filename: 'sports.png',
+            path: path.join(__dirname, '../') + 'images/sports.png',
+            cid: 'sportIMG'
+        },
+        {
+            filename: 'website.png',
+            path: path.join(__dirname, '../') + 'images/website.png',
+            cid: 'websiteIMG'
+        },
+        {
+            filename: 'email.png',
+            path: path.join(__dirname, '../') + 'images/email.png',
+            cid: 'emailIMG'
+        }],
+        html: `
     <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -95,7 +95,6 @@ module.exports.sendConfirmationEmail = (senderName, senderClubId, senderClubName
                                                 style="display: block;" border="0" />
                                         </a>
                                     </td>
-                                    <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
                                     <td>
                                         <a href=${process.env.URL_HOST_FRONTEND}>
                                             <img src="cid:websiteIMG" alt="Website" width="38" height="38"
@@ -112,5 +111,5 @@ module.exports.sendConfirmationEmail = (senderName, senderClubId, senderClubName
     </table>
 </body>
 `,
-  }).catch((err) => console.log(err));
+    }).catch((err) => console.log(err));
 };
