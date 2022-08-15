@@ -1,5 +1,6 @@
 const Club = require('../models/club');
 const Player = require('../models/player');
+const { isPlayerAdminOfClub, isPlayerInClub } = require('./validator')
 
 exports.getClub = (req, res) => {
   if (!req.params.id) { return res.status(400).json({ msg: { message: 'You need to specify a club' } }); }
@@ -8,9 +9,7 @@ exports.getClub = (req, res) => {
     if (err) { return res.status(400).json({ msg: { message: err } }); }
     if (!club) { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
 
-    // Check if user belongs to questioned club in DB
-    const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === club.id);
-    if (!clubFound) { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
+    if (!isPlayerInClub(req, res, club)) return res.status(400).json({ msg: { message: 'The club does not exist' } });
 
     return res.status(200).json(club);
   });
@@ -21,12 +20,12 @@ exports.createClub = (req, res) => {
 
   Club.findOne({ name: { $eq: req.body.name } }, (err, club) => {
     if (err) { return res.status(400).json({ msg: { message: err } }); }
-
     if (club) { return res.status(400).json({ msg: { message: 'The club already exists' } }); }
 
     const newClub = Club(req.body);
     newClub.save((err, club) => {
       if (err) { return res.status(400).json({ msg: { message: err } }); }
+
       // Add club to player and set role to admin
       Player.findById(req.user._id, (err, player) => {
         if (err || !player) { return res.status(400).json({ msg: { message: err } }); }
@@ -53,9 +52,7 @@ exports.updateClub = (req, res) => {
     if (err) { return res.status(400).json({ msg: { message: err } }); }
     if (!club) { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
 
-    // Check if user belongs to questioned club in DB
-    const clubFound = req.user.clubs.find((userClub) => userClub.clubId.toString() === club.id);
-    if (!clubFound || clubFound.role !== 'admin') { return res.status(400).json({ msg: { message: 'The club does not exist' } }); }
+    if (!isPlayerAdminOfClub(req, res, club)) return res.status(400).json({ msg: { message: 'The club does not exist' } });
 
     club.name = req.body.name;
     club.invitationCode = req.body.invitationCode;
