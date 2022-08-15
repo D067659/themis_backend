@@ -14,7 +14,7 @@ const PlayerSchema = new mongoose.Schema({
     trim: true,
     index: {
       unique: true,
-      partialFilterExpression: { email: { $type: 'string' } },
+      partialFilterExpression: { email: { $exists: true, $gt: '' } },
     }
   },
   password: {
