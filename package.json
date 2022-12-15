@@ -27,7 +27,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "eslint-plugin-jest": "^26.1.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-rate-limit": "^6.3.0",
     "helmet": "^5.0.2",
     "jsonwebtoken": "^8.5.1",
